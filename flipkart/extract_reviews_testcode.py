@@ -32,7 +32,7 @@ def extract_reviews(review_url):
             'productTitle': (str(review_url).split(".com/")[1]).split("product-reviews")[0],
             'Review Title': soup.find('p', {'class':"_2-N8zT"}).text.strip(),
             'Rating': (soup.find('div', {'class': '_3LWZlK _1BLPMq'}).get_text()),
-            'Review Body': single_review.find('div', {'class': 't-ZTKy'}).find().text.strip() ,
+            'Review Body': soup.find('div', {'class': 't-ZTKy'}).find().text.strip() ,
         }
     
     reviewlist.append(dict_review)
@@ -74,7 +74,7 @@ def main():
         except:
             review_count = 0
 
-    for page_id in range(1,2):
+    for page_id in range(1,page_count):
         print(f'Running for page{page_id}')
         try:
             review_url=product_url.replace("/p/", "/product-reviews/") + "&page=" + str(page_id)
