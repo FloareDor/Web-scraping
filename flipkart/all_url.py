@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+import pandas as pd
 
 url = "https://www.flipkart.com/search?q=handicraft&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
 
@@ -18,34 +19,31 @@ max_page = max_page.removesuffix('12345678910Next')
 max_page = max_page.removeprefix("Page 1 of ")
 max_page = int(max_page.replace(',', '')) # the variable max_page has the total number of pages
 
-
 for i in range(1,3): # replace 3 with max_page+1 
     try:
         url = "https://www.flipkart.com/search?q=handicraft&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(i)
         page = requests.get(url) 
         doc = page.content  
-        got_links=[]
         soup = BeautifulSoup(doc,'html.parser')
         string = "https://www.flipkart.com" 
-        links = soup.find_all(["a"],class_="s1Q9rs") 
-        for j in links:
-            got_links.append([string+j['href']])  
+        links = soup.find_all(["a"],class_="s1Q9rs")
+        for link in links:
+            got_links.append(string+link['href'])
+        print(len(got_links))
         print("done "+str(i))
-    except:
-        print("")
+    except Exception as e:
+        print(f"Massive Error: {e}")
 
-    if (i== 26):
-        break
+    #if (i== 26):
+        #break
 
 
+df=pd.DataFrame(got_links)
+#print(df)
+df.to_csv('flipkart_url.csv',mode='a',index=False)
 
-fields = ['URL'] 
-filename = "flipkart_url.csv"
-
-with open(filename, 'w') as csvfile: 
-    csvwriter = csv.writer(csvfile) 
-    csvwriter.writerow(fields) 
-    csvwriter.writerows(got_links)
+#fields = ['URL'] 
+#filename = "flipkart_url.csv"
 
 
 
